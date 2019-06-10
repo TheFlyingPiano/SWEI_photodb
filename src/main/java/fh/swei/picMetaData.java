@@ -16,15 +16,15 @@ class picMetaData {
 
     static Connection conn = null;
 
-    static Connection connectDB(){
+    static Connection connectDB() {
 
-        if(conn!=null){
+        if (conn != null) {
             return conn;
         }
-        try{
+        try {
 
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/photodb?" +
-                    "useTimezone=true&serverTimezone=UTC","FH_SWEI", "swei" );
+                    "useTimezone=true&serverTimezone=UTC", "FH_SWEI", "swei");
 
         } catch (SQLException ex) {
 
@@ -37,12 +37,12 @@ class picMetaData {
     }
 
     //reads all metadata
-     static void imageData(File imagePath) throws ImageProcessingException, IOException {
+    static void imageData(File imagePath) throws ImageProcessingException, IOException {
         Metadata metadata = ImageMetadataReader.readMetadata(imagePath);
 
         for (Directory directory : metadata.getDirectories()) {
             for (Tag tag : directory.getTags()) {
-          //      System.out.println(tag);
+                //      System.out.println(tag);
             }
         }
     }
@@ -50,7 +50,7 @@ class picMetaData {
     //reads the date
     static Date imageDate(File imagePath) throws ImageProcessingException, IOException {
         Metadata metadata = ImageMetadataReader.readMetadata(imagePath);
-        if(metadata.containsDirectoryOfType(ExifSubIFDDirectory.class)) {
+        if (metadata.containsDirectoryOfType(ExifSubIFDDirectory.class)) {
             ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 
             return directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
@@ -59,31 +59,30 @@ class picMetaData {
     }
 
     static String getPhotogr(int phoID) throws SQLException {
-        String Phot=null;
+        String Phot = null;
         Statement stmt = null;
         ResultSet rs = null;
 
         stmt = conn.createStatement();
-        rs=stmt.executeQuery("SELECT * FROM photographer WHERE idphotographer = "+phoID);
+        rs = stmt.executeQuery("SELECT * FROM photographer WHERE idphotographer = " + phoID);
 
 
-        while(rs.next()) {
-             Phot = rs.getString("name") + " " + rs.getString("surname");
+        while (rs.next()) {
+            Phot = rs.getString("name") + " " + rs.getString("surname");
         }
         return Phot;
 
     }
 
     static ResultSet getPicture(String file) throws SQLException {
-        conn=connectDB();
-        file=file.split("\\\\")[1];
+        conn = connectDB();
+        file = file.split("\\\\")[1];
         Statement stmt = null;
         ResultSet rs = null;
 
         stmt = conn.createStatement();
-        rs=stmt.executeQuery("SELECT * FROM photodb.pictures WHERE filename = \""+file+"\"");
+        rs = stmt.executeQuery("SELECT * FROM photodb.pictures WHERE filename = \"" + file + "\"");
 
-        String test="SELECT * FROM photodb.pictures WHERE filename = \" "+file+"\"";
         return rs;
     }
 

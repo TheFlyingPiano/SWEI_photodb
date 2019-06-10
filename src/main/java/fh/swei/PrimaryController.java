@@ -40,20 +40,19 @@ public class PrimaryController {
     }
 
 
-
     @FXML
     private void switchToSecondary() throws IOException {
         App.setRoot("secondary");
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         getPics();
         picMetaData.connectDB();
     }
 
     //get all pictures in a List and display the first
-    private void getPics(){
+    private void getPics() {
 
         try (Stream<Path> walk = Files.walk(Paths.get("pictures"))) {
 
@@ -82,8 +81,8 @@ public class PrimaryController {
     @FXML
     private void prevPic() throws IOException, ImageProcessingException, SQLException {
         picn--;
-        if(picn<0){
-            picn=picn+result.size();
+        if (picn < 0) {
+            picn = picn + result.size();
 
         }
         update(picn);
@@ -93,13 +92,13 @@ public class PrimaryController {
 
     //update the preview
     private void updatePrev(int prevn) throws FileNotFoundException {
-        prevn=prevn%result.size();
-        int i1=prevn;
-        int i3=prevn;
+        prevn = prevn % result.size();
+        int i1 = prevn;
+        int i3 = prevn;
         i1--;
         i3++;
-        i1= Math.floorMod(i1,result.size());
-        i3=(i3 %result.size());
+        i1 = Math.floorMod(i1, result.size());
+        i3 = (i3 % result.size());
         prev1.setImage(new Image(new FileInputStream(result.get(i1))));
         prev2.setImage(new Image(new FileInputStream(result.get(prevn))));
         prev3.setImage(new Image(new FileInputStream(result.get(i3))));
@@ -107,18 +106,18 @@ public class PrimaryController {
 
     //update the picture and metadata
     private void update(int picn) throws ImageProcessingException, IOException, SQLException {
-        picn=(picn %result.size());
-        Image img=new Image(new FileInputStream(result.get(picn)));
+        picn = (picn % result.size());
+        Image img = new Image(new FileInputStream(result.get(picn)));
         mainImg.setImage(img);
 
         picMetaData.imageDate(new File(result.get(picn)));
         date.setText(picMetaData.imageDate(new File(result.get(picn))).toString());
-       // filename.setText(result.get(picn));
+        // filename.setText(result.get(picn));
 
-        ResultSet picdata=picMetaData.getPicture(result.get(picn));
+        ResultSet picdata = picMetaData.getPicture(result.get(picn));
         while (picdata.next()) {
             filename.setText(picdata.getString("filename"));
-            String phot=picMetaData.getPhotogr(picdata.getInt("photographer_ID"));
+            String phot = picMetaData.getPhotogr(picdata.getInt("photographer_ID"));
             photographer.setText(phot);
         }
     }
@@ -127,7 +126,6 @@ public class PrimaryController {
     private void openFolder() throws IOException {
         Desktop.getDesktop().open(new File("pictures"));
     }
-
 
 
 }
