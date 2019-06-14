@@ -16,11 +16,9 @@ import java.util.stream.Stream;
 
 import com.drew.imaging.ImageProcessingException;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 public class PrimaryController {
 
@@ -48,7 +46,6 @@ public class PrimaryController {
     @FXML
     public void initialize() {
         getPics();
-        picMetaData.connectDB();
     }
 
     //get all pictures in a List and display the first
@@ -110,16 +107,16 @@ public class PrimaryController {
         Image img = new Image(new FileInputStream(result.get(picn)));
         mainImg.setImage(img);
 
-        picMetaData.imageDate(new File(result.get(picn)));
-        date.setText(picMetaData.imageDate(new File(result.get(picn))).toString());
+        PicDataAccess.imageDate(new File(result.get(picn)));
+        date.setText(PicDataAccess.imageDate(new File(result.get(picn))).toString());
         // filename.setText(result.get(picn));
 
-        ResultSet picdata = picMetaData.getPicture(result.get(picn));
-        while (picdata.next()) {
-            filename.setText(picdata.getString("filename"));
-            String phot = picMetaData.getPhotogr(picdata.getInt("photographer_ID"));
-            photographer.setText(phot);
-        }
+        Picture pic = PicDataAccess.getPicture(result.get(picn));
+
+
+            filename.setText(pic.getFilename());
+            photographer.setText(pic.getPhotographer());
+
     }
 
     @FXML

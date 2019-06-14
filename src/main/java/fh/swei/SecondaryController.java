@@ -27,7 +27,7 @@ public class SecondaryController {
 
     private void listPhotographers() throws SQLException {
 
-       ResultSet rs= Photographer.getPhotogrs();
+       ResultSet rs= PhotographerDataAccess.getPhotogrs();
 
         while (rs.next()) {
             photogrList.getItems().add(     rs.getString("name") + " " + rs.getString("surname"));
@@ -36,17 +36,17 @@ public class SecondaryController {
 
     @FXML
     private void addphotogr() throws SQLException {
-        TextInputDialog dialog = new TextInputDialog("New Photographer");
-        dialog.setTitle("Add Photographer");
+        TextInputDialog dialog = new TextInputDialog("New PhotographerDataAccess");
+        dialog.setTitle("Add PhotographerDataAccess");
         //dialog.setHeaderText("Please enter ");
-        dialog.setContentText("Please enter Photographer name:");
+        dialog.setContentText("Please enter PhotographerDataAccess name:");
      //   dialog.setContentText("Please enter your surname:");
 
 // Traditional way to get the response value.
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()){
            // System.out.println("Your name: " + result.get());
-            Photographer.addPhotographer(result.get());
+            PhotographerDataAccess.addPhotographer(result.get());
         }
         listPhotographers();
     }
