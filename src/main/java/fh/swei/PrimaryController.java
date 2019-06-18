@@ -97,6 +97,7 @@ public class PrimaryController {
         i1 = Math.floorMod(i1, result.size());
         i3 = (i3 % result.size());
         prev1.setImage(new Image(new FileInputStream(result.get(i1))));
+        //prev1.setImage(new Image(new FileInputStream(PicDataAccess.getPictures().get(i1).getFilename())));
         prev2.setImage(new Image(new FileInputStream(result.get(prevn))));
         prev3.setImage(new Image(new FileInputStream(result.get(i3))));
     }
@@ -116,8 +117,9 @@ public class PrimaryController {
 
             filename.setText(pic.getFilename());
             photographer.setText(pic.getPhotographer());
-
+        MetadataExtractor.comparePics();
     }
+
 
     @FXML
     private void openFolder() throws IOException {

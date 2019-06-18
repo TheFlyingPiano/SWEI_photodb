@@ -29,11 +29,8 @@ public class PhotographerDataAccess {
     static void addPhotographer(String FName) throws SQLException {
         String Name=FName.split(" ")[0];
         String SName=FName.split(" ")[1];
-        Connection conn= DatabaseConnection.connectDB();
-        Statement stmt = null;
-        stmt = conn.createStatement();
         String sql="INSERT INTO photographer (name,surname) VALUES ('"+Name+"','"+SName+"')";
-        stmt.executeUpdate(sql);
+        DatabaseConnection.updateData(sql);
 
     }
 }

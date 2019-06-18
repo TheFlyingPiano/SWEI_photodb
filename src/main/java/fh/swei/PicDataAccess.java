@@ -18,7 +18,6 @@ class PicDataAccess {
 
     private static List<Picture> Pictures=new ArrayList<>();
 
-    static Connection conn = null;
 
 
     //reads all metadata
@@ -49,9 +48,6 @@ class PicDataAccess {
         file = file.split("\\\\")[1];
         String sql = "SELECT * FROM photodb.pictures WHERE filename = \"" + file + "\"";
 
-       // if(Pictures.contains()){}
-
-
 
         ResultSet rs=DatabaseConnection.getData(sql);
         Picture tmp=new Picture();
@@ -60,12 +56,28 @@ class PicDataAccess {
             tmp.setFilename(rs.getString("filename"));
             tmp.setPhotographer(PhotographerDataAccess.getPhotogr(rs.getInt("photographer_ID")));
         }
-        Pictures.add(tmp);
+
+
         return tmp;
     }
 
 
-    public static List<Picture> getPictures() {
+    public static List<Picture> getPictures() throws SQLException {
+        if(Pictures.isEmpty()) {
+            String sql = "SELECT * FROM photodb.pictures";
+
+            ResultSet rs = DatabaseConnection.getData(sql);
+
+
+            while (rs.next()) {
+                Picture tmp = new Picture();
+                tmp.setFilename(rs.getString("filename"));
+                tmp.setPhotographer(PhotographerDataAccess.getPhotogr(rs.getInt("photographer_ID")));
+                Pictures.add(tmp);
+            }
+            return Pictures;
+        }
+        else
         return Pictures;
     }
 

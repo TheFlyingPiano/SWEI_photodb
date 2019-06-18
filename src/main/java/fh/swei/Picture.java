@@ -7,6 +7,7 @@ public class Picture {
 
     private String Filename;
     private String Photographer;
+    private String Date;
     private List<String> Metdatata;
 
 
@@ -35,4 +36,11 @@ public class Picture {
     }
 
 
+    public String getDate() {
+        return Date;
+    }
+
+    public void setDate(String date) {
+        Date = date;
+    }
 }

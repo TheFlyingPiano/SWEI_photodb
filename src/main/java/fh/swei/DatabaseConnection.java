@@ -28,15 +28,18 @@ class DatabaseConnection {
 
 
     static ResultSet getData(String sql) throws SQLException {
-
         Statement stmt;
         ResultSet rs;
-
         stmt = conn.createStatement();
         rs = stmt.executeQuery(sql);
-
         return rs;
-
     }
 
+    static void updateData(String sql) throws SQLException {
+        Statement stmt;
+        ResultSet rs;
+        stmt = conn.createStatement();
+        stmt.executeUpdate(sql);
+
+    }
 }
