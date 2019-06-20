@@ -23,6 +23,7 @@ public class App extends Application {
         DatabaseConnection.connectDB();
         scene = new Scene(loadFXML("primary"));
         stage.setScene(scene);
+        stage.setTitle("Pictures");
         stage.show();
 
     }

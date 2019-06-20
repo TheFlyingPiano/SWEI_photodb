@@ -4,12 +4,12 @@ import java.util.List;
 
 
 public class Picture {
-
+    private int ID;
     private String Filename;
     private String Photographer;
     private String Date;
-    private List<String> Metdatata;
-
+    private List<String> ExifMetadata;
+    private List<String> IptcMetadata;
 
     public String getFilename() {
         return Filename;
@@ -27,12 +27,12 @@ public class Picture {
         Photographer = photographer;
     }
 
-    public List<String> getMetdatata() {
-        return Metdatata;
+    public List<String> getExifMetadata() {
+        return ExifMetadata;
     }
 
-    public void setMetdatata(List<String> metdatata) {
-        Metdatata = metdatata;
+    public void setExifMetadata(List<String> exifMetadata) {
+        ExifMetadata = exifMetadata;
     }
 
 
@@ -42,5 +42,21 @@ public class Picture {
 
     public void setDate(String date) {
         Date = date;
+    }
+
+    public List<String> getIptcMetadata() {
+        return IptcMetadata;
+    }
+
+    public void setIptcMetadata(List<String> iptcMetadata) {
+        IptcMetadata = iptcMetadata;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 }

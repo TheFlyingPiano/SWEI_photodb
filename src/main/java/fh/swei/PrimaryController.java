@@ -10,15 +10,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 import com.drew.imaging.ImageProcessingException;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class PrimaryController {
 
@@ -29,18 +38,31 @@ public class PrimaryController {
     public ImageView prev3;
     public Text photographer;
     public Text filename;
-    private List<String> result;
+    public ListView metadatalist;
+    private List<String> result=new ArrayList<>();
     private int picn;
     public ImageView mainImg;
 
-    public ImageView getMainImg() {
-        return mainImg;
-    }
+    public List<Picture> pics=new ArrayList<>();
 
 
     @FXML
     private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("secondary.fxml"));
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setTitle("Photographers");
+            stage.setScene(new Scene(root1));
+            SecondaryController secondary=fxmlLoader.<SecondaryController>getController();
+            secondary.setPicnum(picn);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // App.setRoot("secondary");
     }
 
     @FXML
@@ -51,23 +73,24 @@ public class PrimaryController {
     //get all pictures in a List and display the first
     private void getPics() {
 
-        try (Stream<Path> walk = Files.walk(Paths.get("pictures"))) {
 
-            result = walk.filter(Files::isRegularFile)
-                    .map(x -> x.toString()).collect(Collectors.toList());
-
+        try{
+        pics =PicDataAccess.getPictures();
+            for(Picture picture : pics){
+            result.add("pictures\\"+picture.getFilename());
+            }
 
             update(picn);
             updatePrev(picn);
 
-        } catch (IOException | ImageProcessingException | SQLException e) {
+        } catch (IOException | SQLException | ImageProcessingException e) {
             e.printStackTrace();
         }
     }
 
     //show the next picture
     @FXML
-    private void nextPic() throws IOException, ImageProcessingException, SQLException {
+    private void nextPic() throws IOException, SQLException, ImageProcessingException {
         picn++;
         update(picn);
         updatePrev(picn);
@@ -76,7 +99,7 @@ public class PrimaryController {
 
     //show the previous picture
     @FXML
-    private void prevPic() throws IOException, ImageProcessingException, SQLException {
+    private void prevPic() throws IOException, SQLException, ImageProcessingException {
         picn--;
         if (picn < 0) {
             picn = picn + result.size();
@@ -103,7 +126,7 @@ public class PrimaryController {
     }
 
     //update the picture and metadata
-    private void update(int picn) throws ImageProcessingException, IOException, SQLException {
+    private void update(int picn) throws IOException, SQLException, ImageProcessingException {
         picn = (picn % result.size());
         Image img = new Image(new FileInputStream(result.get(picn)));
         mainImg.setImage(img);
@@ -111,13 +134,13 @@ public class PrimaryController {
         PicDataAccess.imageDate(new File(result.get(picn)));
         date.setText(PicDataAccess.imageDate(new File(result.get(picn))).toString());
         // filename.setText(result.get(picn));
-
+        metadatalist.getItems().addAll(MetadataExtractor.imageData(new File(result.get(picn))));
         Picture pic = PicDataAccess.getPicture(result.get(picn));
 
 
             filename.setText(pic.getFilename());
             photographer.setText(pic.getPhotographer());
-        MetadataExtractor.comparePics();
+       // MetadataExtractor.comparePics();
     }
 
 

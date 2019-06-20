@@ -2,18 +2,23 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="397.0" prefWidth="635.0" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fh.swei.SecondaryController">
-    <children>
-      <ListView fx:id="photogrList" prefHeight="200.0" prefWidth="108.0" />
-        <Label text="Edit" />
-      <Button fx:id="addphot" onAction="#addphotogr" mnemonicParsing="false" text="Add Photographer" />
-        <Button fx:id="secondaryButton" onAction="#switchToPrimary" text="Back" />
-    </children>
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-</VBox>
+<HBox xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fh.swei.SecondaryController">
+   <children>
+      <VBox alignment="CENTER" prefHeight="397.0" prefWidth="635.0" spacing="20.0">
+          <children>
+            <ListView fx:id="photogrList" prefHeight="200.0" prefWidth="108.0" />
+            <Button fx:id="choosephot" mnemonicParsing="false" onAction="#choosePhot" text="Choose the selected photographer" />
+            <Button fx:id="addphot" mnemonicParsing="false" onAction="#addphotogr" text="Add a new photographer" />
+              <Button fx:id="closeButton" onAction="#switchToPrimary" text="Back" />
+          </children>
+      
+          <padding>
+              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+          </padding>
+      </VBox>
+   </children>
+</HBox>

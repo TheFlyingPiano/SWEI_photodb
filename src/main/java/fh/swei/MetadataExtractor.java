@@ -55,21 +55,26 @@ public class MetadataExtractor {
     }
 
 
-    static void imageData(File imagePath) throws ImageProcessingException, IOException {
+    static List imageData(File imagePath) throws ImageProcessingException, IOException {
+        List<Tag> tagList=new ArrayList<>();
         Metadata metadata = ImageMetadataReader.readMetadata(imagePath);
 
         for (Directory directory : metadata.getDirectories()) {
             for (Tag tag : directory.getTags()) {
+                tagList.add(tag);
                 //      System.out.println(tag);
             }
         }
 
         if (metadata.containsDirectoryOfType(ExifSubIFDDirectory.class)) {
-            ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+            ExifSubIFDDirectory directory2 = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 
-            Date date= directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+            for (Tag tag : directory2.getTags()) {
+                tagList.add(tag);
+                //      System.out.println(tag);
+            }
         }
 
-
+    return tagList;
     }
 }

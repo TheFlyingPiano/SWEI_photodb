@@ -20,17 +20,6 @@ class PicDataAccess {
 
 
 
-    //reads all metadata
-    static void imageData(File imagePath) throws ImageProcessingException, IOException {
-        Metadata metadata = ImageMetadataReader.readMetadata(imagePath);
-
-        for (Directory directory : metadata.getDirectories()) {
-            for (Tag tag : directory.getTags()) {
-                //      System.out.println(tag);
-            }
-        }
-    }
-
     //reads the date
     static Date imageDate(File imagePath) throws ImageProcessingException, IOException {
         Metadata metadata = ImageMetadataReader.readMetadata(imagePath);
@@ -61,8 +50,14 @@ class PicDataAccess {
         return tmp;
     }
 
+    static void updatePicPhotographer(int sel, int pic) throws SQLException {
 
-    public static List<Picture> getPictures() throws SQLException {
+            String sql="UPDATE `photodb`.`pictures` SET `photographer_ID` = "+sel+" WHERE idpictures = "+ pic+";";
+
+        DatabaseConnection.updateData(sql);
+    }
+
+    static List<Picture> getPictures() throws SQLException {
         if(Pictures.isEmpty()) {
             String sql = "SELECT * FROM photodb.pictures";
 
@@ -73,6 +68,7 @@ class PicDataAccess {
                 Picture tmp = new Picture();
                 tmp.setFilename(rs.getString("filename"));
                 tmp.setPhotographer(PhotographerDataAccess.getPhotogr(rs.getInt("photographer_ID")));
+                tmp.setID(rs.getInt("idpictures"));
                 Pictures.add(tmp);
             }
             return Pictures;
