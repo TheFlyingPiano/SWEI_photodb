@@ -6,15 +6,17 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fh.swei.PrimaryController">
+<AnchorPane fx:id="ap" prefHeight="692.0" prefWidth="1325.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fh.swei.PrimaryController">
    <children>
-      <Label alignment="TOP_CENTER" layoutX="723.0" layoutY="74.0" text="Details" />
-      <AnchorPane layoutX="629.0" layoutY="152.0" prefHeight="147.0" prefWidth="229.0">
+      <Label alignment="TOP_CENTER" layoutX="712.0" layoutY="60.0" text="Details" />
+      <AnchorPane layoutX="548.0" layoutY="157.0" prefHeight="147.0" prefWidth="229.0">
          <children>
             <Text layoutX="1.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Photographer" AnchorPane.leftAnchor="1.0" />
             <Text fx:id="photographer" layoutX="178.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="37.29199916124344" />
@@ -24,8 +26,8 @@
              <Text fx:id="filename" layoutX="128.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="100.00000074505806" />
          </children>
       </AnchorPane>
-      <Button fx:id="primaryButton" layoutX="722.0" layoutY="329.0" onAction="#switchToSecondary" text="Edit" />
-      <MenuBar prefWidth="900.0">
+      <Button fx:id="primaryButton" layoutX="581.0" layoutY="321.0" onAction="#switchToSecondary" text="Edit" />
+      <MenuBar prefHeight="39.0" prefWidth="1325.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -34,7 +36,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem fx:id="addpic" mnemonicParsing="false" onAction="#addPic" text="Add" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -44,10 +46,15 @@
           </Menu>
         </menus>
       </MenuBar>
-      <ImageView fx:id="mainImg" fitHeight="334.0" fitWidth="572.0" layoutX="56.0" layoutY="87.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../../../../pictures/placeholder.jpg" />
-         </image></ImageView>
+      <AnchorPane layoutX="18.0" layoutY="87.0" prefHeight="349.0" prefWidth="523.0">
+         <children>
+            <ImageView fx:id="mainImg" fitHeight="348.0" fitWidth="381.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../pictures/placeholder.jpg" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
       <Button layoutX="56.0" layoutY="495.0" mnemonicParsing="false" onAction="#prevPic" text="Prev" />
       <Button layoutX="480.0" layoutY="495.0" mnemonicParsing="false" onAction="#nextPic" text="Next" />
       <ImageView fx:id="prev1" fitHeight="100.0" fitWidth="100.0" layoutX="148.0" layoutY="465.0" pickOnBounds="true" preserveRatio="true">
@@ -64,7 +71,27 @@
             <Image url="@../../../../../pictures/placeholder.jpg" />
          </image>
       </ImageView>
-      <ListView fx:id="metadatalist" layoutX="658.0" layoutY="378.0" prefHeight="200.0" prefWidth="200.0" />
+      <TabPane layoutX="867.0" layoutY="101.0" prefHeight="496.0" prefWidth="425.0" tabClosingPolicy="UNAVAILABLE">
+         <tabs>
+            <Tab closable="false" text="EXIF">
+               <content>
+                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                       <ListView fx:id="EXIFMeta" prefHeight="366.0" prefWidth="264.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                   </children></AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="IPTC">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="366.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="IPTCMeta" layoutX="-150.0" prefHeight="366.0" prefWidth="414.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <Button fx:id="IPTCMetaEdit" layoutX="370.0" layoutY="406.0" mnemonicParsing="false" onAction="#editIPTC" text="Edit" />
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+         </tabs>
+      </TabPane>
 
    </children>
 </AnchorPane>

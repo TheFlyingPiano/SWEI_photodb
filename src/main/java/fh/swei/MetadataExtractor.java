@@ -6,6 +6,7 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.iptc.IptcDirectory;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,8 @@ public class MetadataExtractor {
 
 
 
+
+
     static void comparePics() throws SQLException {
         List<String> LocalPics=new ArrayList<>();
         List<Picture> DBPics=PicDataAccess.getPictures();
@@ -31,7 +34,7 @@ public class MetadataExtractor {
         try (Stream<Path> walk = Files.walk(Paths.get("pictures"))) {
 
             LocalPics = walk.filter(Files::isRegularFile)
-                    .map(x -> x.toString()).collect(Collectors.toList());
+                    .map(Path::toString).collect(Collectors.toList());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,27 +57,44 @@ public class MetadataExtractor {
 
     }
 
-
-    static List imageData(File imagePath) throws ImageProcessingException, IOException {
-        List<Tag> tagList=new ArrayList<>();
+    //TRUE FOR EXIF, FALSE FOR IPTC
+    static List Metadata(File imagePath, boolean s) throws ImageProcessingException, IOException {
+        List<Tag> tagList = new ArrayList<>();
         Metadata metadata = ImageMetadataReader.readMetadata(imagePath);
 
-        for (Directory directory : metadata.getDirectories()) {
-            for (Tag tag : directory.getTags()) {
-                tagList.add(tag);
-                //      System.out.println(tag);
+        if (s) {
+            if (metadata.containsDirectoryOfType(ExifSubIFDDirectory.class)) {
+                ExifSubIFDDirectory directory2 = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+                //     System.out.println(tag);
+                tagList.addAll(directory2.getTags());
             }
+            return tagList;
+
+        } else if (metadata.containsDirectoryOfType(IptcDirectory.class)) {
+            IptcDirectory directory1 = metadata.getFirstDirectoryOfType(IptcDirectory.class);
+            //     System.out.println(tag);
+            tagList.addAll(directory1.getTags());
+
+            return tagList;
         }
-
-        if (metadata.containsDirectoryOfType(ExifSubIFDDirectory.class)) {
-            ExifSubIFDDirectory directory2 = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-
-            for (Tag tag : directory2.getTags()) {
-                tagList.add(tag);
-                //      System.out.println(tag);
-            }
-        }
-
-    return tagList;
+        return tagList;
     }
+    static List getMetadata(File imagePath) throws ImageProcessingException, IOException {
+        List<Tag> tagList = new ArrayList<>();
+        Metadata metadata = ImageMetadataReader.readMetadata(imagePath);
+
+
+
+        if (metadata.containsDirectoryOfType(IptcDirectory.class)) {
+            IptcDirectory directory1 = metadata.getFirstDirectoryOfType(IptcDirectory.class);
+            if(directory1.containsTag(120))
+
+
+            return tagList;
+        }
+        return tagList;
+    }
+
+
+
 }

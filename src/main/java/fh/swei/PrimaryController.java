@@ -5,15 +5,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 
 import com.drew.imaging.ImageProcessingException;
@@ -21,13 +16,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.FileChooser;
 
 public class PrimaryController {
 
@@ -38,12 +38,16 @@ public class PrimaryController {
     public ImageView prev3;
     public Text photographer;
     public Text filename;
-    public ListView metadatalist;
+    public ListView EXIFMeta;
+    public MenuItem addpic;
+    public AnchorPane ap;
+    public ListView IPTCMeta;
     private List<String> result=new ArrayList<>();
     private int picn;
     public ImageView mainImg;
+    private Picture pic;
 
-    public List<Picture> pics=new ArrayList<>();
+    private List<Picture> pics=new ArrayList<>();
 
 
     @FXML
@@ -56,8 +60,8 @@ public class PrimaryController {
             stage.initStyle(StageStyle.DECORATED);
             stage.setTitle("Photographers");
             stage.setScene(new Scene(root1));
-            SecondaryController secondary=fxmlLoader.<SecondaryController>getController();
-            secondary.setPicnum(picn);
+            SecondaryController secondary= fxmlLoader.<SecondaryController>getController();
+            secondary.setPicnum(pics.get(picn).getID());
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,10 +74,25 @@ public class PrimaryController {
         getPics();
     }
 
+    @FXML
+    private void addPic() throws SQLException {
+        String Filename=null;
+        Desktop desktop = Desktop.getDesktop();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("primary.fxml"));
+
+        Stage stage = (Stage) ap.getScene().getWindow();
+        final FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+          Filename =file.getName();
+        }
+
+        PicDataAccess.addPicture(Filename);
+        getPics();
+    }
+
     //get all pictures in a List and display the first
     private void getPics() {
-
-
         try{
         pics =PicDataAccess.getPictures();
             for(Picture picture : pics){
@@ -127,6 +146,8 @@ public class PrimaryController {
 
     //update the picture and metadata
     private void update(int picn) throws IOException, SQLException, ImageProcessingException {
+        EXIFMeta.getItems().clear();
+        IPTCMeta.getItems().clear();
         picn = (picn % result.size());
         Image img = new Image(new FileInputStream(result.get(picn)));
         mainImg.setImage(img);
@@ -134,7 +155,10 @@ public class PrimaryController {
         PicDataAccess.imageDate(new File(result.get(picn)));
         date.setText(PicDataAccess.imageDate(new File(result.get(picn))).toString());
         // filename.setText(result.get(picn));
-        metadatalist.getItems().addAll(MetadataExtractor.imageData(new File(result.get(picn))));
+
+        EXIFMeta.getItems().addAll(MetadataExtractor.Metadata(new File(result.get(picn)),true));
+        IPTCMeta.getItems().addAll(IPTC.getIPTC(pics.get(picn).getID()));
+
         Picture pic = PicDataAccess.getPicture(result.get(picn));
 
 
@@ -149,5 +173,31 @@ public class PrimaryController {
         Desktop.getDesktop().open(new File("pictures"));
     }
 
+    @FXML
+    public void editIPTC() throws SQLException, IOException, ImageProcessingException {
+        String value=null;
+        if(IPTCMeta.getSelectionModel().getSelectedItems().isEmpty()){
+            Alert a=new Alert(Alert.AlertType.WARNING);
+            a.setHeaderText("Select item first!");
+            a.show();
+            return;
+        }
 
+       String label= IPTCMeta.getSelectionModel().getSelectedItem().toString();
+
+       label=label.split(":")[0];
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Change Info");
+        //dialog.setHeaderText("Please enter ");
+        dialog.setContentText("Please enter Information");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+             value=result.get();
+        }
+
+        IPTC.setIPTC(pics.get(picn).getID(),label,value);
+        update(picn);
+
+    }
 }

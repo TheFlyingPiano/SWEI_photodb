@@ -31,7 +31,16 @@ class PicDataAccess {
         return new Date();
     }
 
+    static void deletePicture(int id){
+        String sql="DELETE FROM `photodb`.`pictures` WHERE idpictures="+id+";";
+    }
 
+    static void addPicture(String Filename) throws SQLException {
+        String sql="INSERT INTO `photodb`.`pictures` (`filename`) VALUES(\""+Filename+"\");";
+        //System.out.println(sql);
+        DatabaseConnection.updateData(sql);
+
+    }
 
     static Picture getPicture(String file) throws SQLException {
         file = file.split("\\\\")[1];
@@ -76,6 +85,7 @@ class PicDataAccess {
         else
         return Pictures;
     }
+
 
     public static void setPictures(List<Picture> pictures) {
         Pictures = pictures;

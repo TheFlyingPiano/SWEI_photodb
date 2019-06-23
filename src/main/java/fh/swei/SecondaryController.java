@@ -71,7 +71,7 @@ public class SecondaryController {
     public void choosePhot() throws SQLException {
 
         int sel= photogrList.getSelectionModel().getSelectedIndex();
-        PicDataAccess.updatePicPhotographer(sel+1, picnum+1);
+        PicDataAccess.updatePicPhotographer(sel+1, picnum);
         Alert a=new Alert(Alert.AlertType.CONFIRMATION);
         a.setHeaderText("Photographer changed!!");
         a.show();
