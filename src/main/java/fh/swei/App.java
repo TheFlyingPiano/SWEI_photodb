@@ -18,12 +18,17 @@ public class App extends Application {
 
     private static Scene scene;
 
+    public static void main(String[] args) {
+
+        launch();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         DatabaseConnection.connectDB();
         scene = new Scene(loadFXML("primary"));
         stage.setScene(scene);
-        stage.setTitle("Pictures");
+        stage.setTitle("PictureDB");
         stage.show();
 
     }
@@ -37,9 +42,6 @@ public class App extends Application {
         return fxmlLoader.load();
     }
 
-    public static void main(String[] args) {
 
-        launch();
-    }
 
 }

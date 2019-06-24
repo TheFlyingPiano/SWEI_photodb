@@ -6,12 +6,11 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import com.drew.metadata.Tag;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reporting {
+class Reporting {
 
     static void singleReport(Picture pic) throws IOException {
 

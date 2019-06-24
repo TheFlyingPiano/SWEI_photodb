@@ -35,7 +35,6 @@ import javafx.stage.FileChooser;
 public class PrimaryController {
 
 
-    public Text date;
     public ImageView prev1;
     public ImageView prev2;
     public ImageView prev3;
@@ -91,9 +90,10 @@ public class PrimaryController {
         if (file != null) {
           Filename =file.getName();
         }
-
-        PicDataAccess.addPicture(Filename);
-        getPics();
+        if (Filename != null && !Filename.isEmpty()) {
+            PicDataAccess.addPicture(Filename);
+            getPics();
+        }
     }
 
     //get all pictures in a List and display the first
@@ -192,7 +192,6 @@ public class PrimaryController {
 
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Change Info");
-        //dialog.setHeaderText("Please enter ");
         dialog.setContentText("Please enter Information");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()){
@@ -219,5 +218,11 @@ public class PrimaryController {
 
     public void singleReport() throws IOException {
         Reporting.singleReport(pics.get(picn));
+    }
+
+    public void about() {
+        Alert a=new Alert(Alert.AlertType.INFORMATION);
+        a.setHeaderText("This application is bad and i should feel bad.");
+        a.show();
     }
 }
