@@ -12,13 +12,16 @@ import java.util.Optional;
 
 
 import com.drew.imaging.ImageProcessingException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,6 +45,8 @@ public class PrimaryController {
     public MenuItem addpic;
     public AnchorPane ap;
     public ListView IPTCMeta;
+    public Button searchbutton;
+    public TextField searchbar;
     private List<String> result=new ArrayList<>();
     private int picn;
     public ImageView mainImg;
@@ -139,7 +144,6 @@ public class PrimaryController {
         i1 = Math.floorMod(i1, result.size());
         i3 = (i3 % result.size());
         prev1.setImage(new Image(new FileInputStream(result.get(i1))));
-        //prev1.setImage(new Image(new FileInputStream(PicDataAccess.getPictures().get(i1).getFilename())));
         prev2.setImage(new Image(new FileInputStream(result.get(prevn))));
         prev3.setImage(new Image(new FileInputStream(result.get(i3))));
     }
@@ -152,12 +156,11 @@ public class PrimaryController {
         Image img = new Image(new FileInputStream(result.get(picn)));
         mainImg.setImage(img);
 
-        PicDataAccess.imageDate(new File(result.get(picn)));
-        date.setText(PicDataAccess.imageDate(new File(result.get(picn))).toString());
-        // filename.setText(result.get(picn));
 
-        EXIFMeta.getItems().addAll(MetadataExtractor.Metadata(new File(result.get(picn)),true));
-        IPTCMeta.getItems().addAll(IPTC.getIPTC(pics.get(picn).getID()));
+        pics.get(picn).setIptcMetadata(IPTC.getIPTC(pics.get(picn).getID()));
+        pics.get(picn).setExifMetadata(MetadataExtractor.Metadata(new File(result.get(picn)),true));
+        EXIFMeta.getItems().addAll(pics.get(picn).getExifMetadata());
+        IPTCMeta.getItems().addAll(pics.get(picn).getIptcMetadata());
 
         Picture pic = PicDataAccess.getPicture(result.get(picn));
 
@@ -199,5 +202,22 @@ public class PrimaryController {
         IPTC.setIPTC(pics.get(picn).getID(),label,value);
         update(picn);
 
+    }
+
+    @FXML
+    public void search() throws ImageProcessingException, SQLException, IOException {
+        String search=searchbar.getText();
+        for(Picture pic: pics){
+            if(pic.getFilename().contains(search)){
+                int a=pics.indexOf(pic);
+                update(a);
+                updatePrev(a);
+            }
+        }
+
+    }
+
+    public void singleReport() throws IOException {
+        Reporting.singleReport(pics.get(picn));
     }
 }

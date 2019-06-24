@@ -20,16 +20,6 @@ class PicDataAccess {
 
 
 
-    //reads the date
-    static Date imageDate(File imagePath) throws ImageProcessingException, IOException {
-        Metadata metadata = ImageMetadataReader.readMetadata(imagePath);
-        if (metadata.containsDirectoryOfType(ExifSubIFDDirectory.class)) {
-            ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-
-            return directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-        }
-        return new Date();
-    }
 
     static void deletePicture(int id){
         String sql="DELETE FROM `photodb`.`pictures` WHERE idpictures="+id+";";
@@ -37,12 +27,17 @@ class PicDataAccess {
 
     static void addPicture(String Filename) throws SQLException {
         String sql="INSERT INTO `photodb`.`pictures` (`filename`) VALUES(\""+Filename+"\");";
+
         //System.out.println(sql);
         DatabaseConnection.updateData(sql);
 
+        Picture pic=getPicture(Filename);
+        String sql2="INSERT INTO phtodb.iptc 'pic_ID' VALUES "+pic.getID()+"";
+        DatabaseConnection.updateData(sql2);
     }
 
     static Picture getPicture(String file) throws SQLException {
+
         file = file.split("\\\\")[1];
         String sql = "SELECT * FROM photodb.pictures WHERE filename = \"" + file + "\"";
 
@@ -52,6 +47,7 @@ class PicDataAccess {
 
         while(rs.next()){
             tmp.setFilename(rs.getString("filename"));
+            tmp.setID(rs.getInt("idpictures"));
             tmp.setPhotographer(PhotographerDataAccess.getPhotogr(rs.getInt("photographer_ID")));
         }
 
