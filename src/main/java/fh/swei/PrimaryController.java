@@ -102,11 +102,23 @@ public class PrimaryController {
 
     //get all pictures in a List and display the first
     private void getPics() {
+        List<String> local= MetadataExtractor.getlocal();
         try{
-        pics =PicDataAccess.getPictures();
-            for(Picture picture : pics){
-            result.add("pictures\\"+picture.getFilename());
+        List<Picture> picsget =PicDataAccess.getPictures();
+        for(Picture picture : picsget){
+            for(String s:local){
+                if(s.equals("pictures\\"+picture.getFilename())){
+                    result.add("pictures\\"+picture.getFilename());
+                    pics.add(picture);
+                }
+
             }
+
+        }
+
+
+
+
 
             update(picn);
             updatePrev(picn);

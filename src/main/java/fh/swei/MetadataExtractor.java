@@ -24,38 +24,19 @@ class MetadataExtractor {
 
 
 
+    static List<String> getlocal(){
 
-
-    static void comparePics() throws SQLException {
         List<String> LocalPics=new ArrayList<>();
-        List<Picture> DBPics=PicDataAccess.getPictures();
-        List<String> FoundPics=new ArrayList<>();
-
         try (Stream<Path> walk = Files.walk(Paths.get("pictures"))) {
 
-            LocalPics = walk.filter(Files::isRegularFile)
-                    .map(Path::toString).collect(Collectors.toList());
+            LocalPics = walk.filter(Files::isRegularFile).map(Path::toString).collect(Collectors.toList());
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
-            for (String localPic : LocalPics) {
-               for (Picture dbPic : DBPics) {
-                String file = localPic.split("\\\\")[1];
-                if (!dbPic.getFilename().contains(file)) {
-                    System.out.println("DB FILENAME: " + dbPic.getFilename());
-                    System.out.println("Local FILENAME: " + file);
-                }
-
-                System.out.println("PIC FOUND "+dbPic.getFilename());
-            }
-        }
-
-
+        return LocalPics;
     }
+
 
     //TRUE FOR EXIF, FALSE FOR IPTC
     static List Metadata(File imagePath, boolean s) throws ImageProcessingException, IOException {
