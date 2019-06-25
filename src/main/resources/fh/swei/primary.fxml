@@ -100,12 +100,21 @@
                   </AnchorPane>
               </content>
             </Tab>
+            <Tab text="Tags">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView prefHeight="405.0" prefWidth="425.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
          </tabs>
       </TabPane>
       <ToolBar layoutY="39.0" prefHeight="39.0" prefWidth="1229.0">
         <items>
           <Button fx:id="searchbutton" mnemonicParsing="false" onAction="#search" prefHeight="15.0" prefWidth="121.0" text="search" />
-            <TextField fx:id="searchbar" prefHeight="15.0" prefWidth="224.0" />
+            <TextField fx:id="searchbar" prefHeight="15.0" prefWidth="224.0" promptText="search" />
         </items>
       </ToolBar>
       <Text layoutX="650.0" layoutY="559.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filename" AnchorPane.leftAnchor="650.0" />

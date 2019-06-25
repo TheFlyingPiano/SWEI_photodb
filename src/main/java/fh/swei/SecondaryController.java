@@ -62,7 +62,7 @@ public class SecondaryController {
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()){
            // System.out.println("Your name: " + result.get());
-            PhotographerDataAccess.addPhotographer(result.get());
+            Photographer.addPhotographer(result.get());
         }
         listPhotographers();
     }

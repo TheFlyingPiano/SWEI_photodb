@@ -7,12 +7,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 
 import com.drew.imaging.ImageProcessingException;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,6 +29,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -206,15 +210,66 @@ public class PrimaryController {
     @FXML
     public void search() throws ImageProcessingException, SQLException, IOException {
         String search=searchbar.getText();
+        List<String> res=new ArrayList<>();
+        List<Integer> nums=new ArrayList<>();
+        int i=0;
         for(Picture pic: pics){
             if(pic.getFilename().contains(search)){
-                int a=pics.indexOf(pic);
-                update(a);
-                updatePrev(a);
-            }
-        }
+             //   System.out.println("Name: "+pic.getFilename());
+                res.add("Name: "+pic.getFilename());
 
+                nums.add(i);
+        }
+            else if(pic.getPhotographer()!=null&&pic.getPhotographer().contains(search)){
+                res.add("Photographer: "+pic.getPhotographer()+" Pic: "+pic.getFilename());
+                nums.add(i);
+                //System.out.println("Photographer: "+pic.getPhotographer() );
+            }
+
+            i++;
+        }
+        final int[] sel = new int[1];
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        ListView<String> result=new ListView<>();
+        Button conf=new Button("Confirm");
+        result.getItems().addAll(res);
+        VBox dialogVbox = new VBox(20);
+
+
+        dialogVbox.getChildren().add(result);
+        dialogVbox.getChildren().add(conf);
+        Scene dialogScene = new Scene(dialogVbox, 300, 200);
+        dialog.setScene(dialogScene);
+        dialog.show();
+        conf.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                sel[0] =result.getSelectionModel().getSelectedIndex();
+               int get=nums.get(sel[0]);
+
+
+                Stage stage= (Stage) conf.getScene().getWindow();
+                stage.close();
+                picn=get;
+                try {
+                    update(get);
+                } catch (IOException | SQLException | ImageProcessingException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    updatePrev(get);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
+
+
+
 
     public void singleReport() throws IOException {
         Reporting.singleReport(pics.get(picn));
